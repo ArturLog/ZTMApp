@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from "bcrypt";
 import { LoginDto } from './dto/login.dto';
+import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
@@ -12,16 +13,17 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
+  private readonly logger = new Logger(AuthService.name);
+
   public async register(registerData: RegisterDto){
     const salt = 10;
     const hashedPassword = await bcrypt.hash(registerData.password, salt);
 
     try{
-      const createdUser = await this.usersService.create({
+      return await this.usersService.create({
         ...registerData,
         password: hashedPassword
       })
-      return createdUser;
     }catch (e) {
       if (e.code === 'SQLITE_CONSTRAINT' && e.message.includes('UNIQUE')) {
         throw new HttpException('User already exists', HttpStatus.CONFLICT);
@@ -32,15 +34,14 @@ export class AuthService {
 
   async login(loginData: LoginDto) {
     try {
-      const user = await this.usersService.findByName(LoginDto.name);
-
-      await this.verifyPassword(loginData.password, user.password);
+      const user = await this.usersService.findByEmail(loginData.email);
+      await this.verifyPassword(loginData.password, user.password)
       const payload = { sub: user.id };
-
       return {
         access_token: await this.jwtService.signAsync(payload)
       }
     } catch (e){
+      this.logger.error(e);
       throw new UnauthorizedException();
     }
   }
