@@ -37,9 +37,8 @@ export class AuthService {
       const user = await this.usersService.findByEmail(loginData.email);
       await this.verifyPassword(loginData.password, user.password)
       const payload = { sub: user.id };
-      return {
-        access_token: await this.jwtService.signAsync(payload)
-      }
+      const token = await this.jwtService.signAsync(payload);
+      return `Authentication=${token}; HttpOnly; Path=/; Max-Age=3600000`
     } catch (e){
       this.logger.error(e);
       throw new UnauthorizedException();
@@ -55,5 +54,9 @@ export class AuthService {
     if (!isPasswordMatching) {
       throw new HttpException("Invalid Credentials", HttpStatus.BAD_REQUEST);
     }
+  }
+
+  async logout(){
+    return 'Authentication=; HttpOnly; Path=/; Max-Age=0';
   }
 }
