@@ -5,6 +5,7 @@ import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from "bcrypt";
 import { LoginDto } from './dto/login.dto';
 import { Logger } from '@nestjs/common';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -32,7 +33,7 @@ export class AuthService {
     }
   }
 
-  async login(loginData: LoginDto) {
+  public async login(loginData: LoginDto) {
     try {
       const user = await this.usersService.findByEmail(loginData.email);
       await this.verifyPassword(loginData.password, user.password)
@@ -45,7 +46,24 @@ export class AuthService {
     }
   }
 
-  async verifyPassword(plainTextPassword: string, hashedPassword: string){
+  public async getCookieWithJwtToken(userId: number) {
+    const payload = { userId };
+    const token = this.jwtService.sign(payload);
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=3600000`;
+  }
+
+  public async validateUser(email: string, password: string): Promise<User> {
+    try{
+      const user = await this.usersService.findByEmail(email);
+      await this.verifyPassword(password, user.password)
+      return user;
+    } catch (e){
+      this.logger.error(`Invalid Credentials \n${e}`);
+      throw new HttpException("Invalid Credentials", HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  public async verifyPassword(plainTextPassword: string, hashedPassword: string){
     const isPasswordMatching = await bcrypt.compare(
       plainTextPassword,
       hashedPassword
@@ -56,7 +74,7 @@ export class AuthService {
     }
   }
 
-  async logout(){
+  public async logout(){
     return 'Authentication=; HttpOnly; Path=/; Max-Age=0';
   }
 }
