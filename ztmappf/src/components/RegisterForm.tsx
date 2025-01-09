@@ -22,10 +22,28 @@ export function RegisterForm({ onRegister }: RegisterFormProps) {
   const [password, setPassword] = useState('')
   const [open, setOpen] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //   onRegister(name, email, password)
+  //   setOpen(false)
+  // }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    onRegister(name, email, password)
-    setOpen(false)
+    try {
+      const response = await fetch('http://localhost:3001/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, password }),
+      })
+      if (!response.ok) throw new Error('Failed to register')
+      onRegister(name, email, password)
+      setOpen(false)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (

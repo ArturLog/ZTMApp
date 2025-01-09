@@ -12,24 +12,47 @@ export function Navbar() {
   const [userName, setUserName] = useState('')
   const router = useRouter()
 
-  const handleLogin = (email: string, password: string) => {
-    // In a real app, you'd handle authentication here
-    console.log('Login attempt:', email, password)
+  // const handleLogin = (email: string, password: string) => {
+  //   // In a real app, you'd handle authentication here
+  //   console.log('Login attempt:', email, password)
+  //   setIsLoggedIn(true)
+  //   setUserName(email.split('@')[0]) // Using email as username for demonstration
+  // }
+  //
+  // const handleRegister = (name: string, email: string, password: string) => {
+  //   // In a real app, you'd handle registration here
+  //   console.log('Register attempt:', name, email, password)
+  //   setIsLoggedIn(true)
+  //   setUserName(name)
+  // }
+  //
+  // const handleLogout = () => {
+  //   setIsLoggedIn(false)
+  //   setUserName('')
+  //   // In a real app, you'd handle logout here
+  // }
+
+  const handleLogin = () => {
     setIsLoggedIn(true)
-    setUserName(email.split('@')[0]) // Using email as username for demonstration
+    // Fetch user details (optional)
   }
 
-  const handleRegister = (name: string, email: string, password: string) => {
-    // In a real app, you'd handle registration here
-    console.log('Register attempt:', name, email, password)
+  const handleRegister = () => {
     setIsLoggedIn(true)
-    setUserName(name)
   }
 
-  const handleLogout = () => {
-    setIsLoggedIn(false)
-    setUserName('')
-    // In a real app, you'd handle logout here
+  const handleLogout = async () => {
+    try {
+      await fetch('http://localhost:3001/auth/logout', {
+        method: 'POST',
+        credentials: 'include', // Include cookies
+      })
+      setIsLoggedIn(false)
+      setUserName('')
+      router.push('/')
+    } catch (error) {
+      console.error('Failed to log out', error)
+    }
   }
 
   return (

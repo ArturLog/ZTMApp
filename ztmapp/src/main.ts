@@ -9,6 +9,11 @@ async function bootstrap() {
     logger: ['error', 'warn', 'log'],
   });
 
+  app.enableCors({
+    origin: 'http://localhost:3000', // Your frontend URL
+    credentials: true, // Allow cookies
+  });
+
   const config = new DocumentBuilder()
     .setTitle('ZTMApp')
     .setDescription('The ZTMApp API')
