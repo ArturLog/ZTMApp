@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { useState } from 'react'
+import { useEffect, useState } from 'react';
 import { LoginForm } from './LoginForm'
 import { RegisterForm } from './RegisterForm'
 
@@ -12,25 +12,29 @@ export function Navbar() {
   const [userName, setUserName] = useState('')
   const router = useRouter()
 
-  // const handleLogin = (email: string, password: string) => {
-  //   // In a real app, you'd handle authentication here
-  //   console.log('Login attempt:', email, password)
-  //   setIsLoggedIn(true)
-  //   setUserName(email.split('@')[0]) // Using email as username for demonstration
-  // }
-  //
-  // const handleRegister = (name: string, email: string, password: string) => {
-  //   // In a real app, you'd handle registration here
-  //   console.log('Register attempt:', name, email, password)
-  //   setIsLoggedIn(true)
-  //   setUserName(name)
-  // }
-  //
-  // const handleLogout = () => {
-  //   setIsLoggedIn(false)
-  //   setUserName('')
-  //   // In a real app, you'd handle logout here
-  // }
+  const checkAuth = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/auth/me', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      if (response.ok) {
+        const user = await response.json();
+        setIsLoggedIn(true);
+        setUserName(user.name || user.email.split('@')[0]);
+      } else {
+        setIsLoggedIn(false);
+        setUserName('');
+      }
+    } catch (error) {
+      console.error('Failed to verify authentication:', error);
+      setIsLoggedIn(false);
+    }
+  };
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
 
   const handleLogin = () => {
     setIsLoggedIn(true)
@@ -67,7 +71,7 @@ export function Navbar() {
               My Stops
             </Button>
             <Button variant="ghost" onClick={() => router.push('/profile')}>
-              {userName}
+              Profile
             </Button>
             <Button variant="outline" onClick={handleLogout}>
               Logout

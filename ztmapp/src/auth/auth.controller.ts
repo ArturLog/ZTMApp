@@ -1,6 +1,6 @@
 import {
   Body,
-  Controller,
+  Controller, Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -24,6 +24,12 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly userService: UsersService,
   ) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  getMe(@Req() request: RequestWithUser) {
+    return request.user;
+  }
 
   @Post('register')
   async register(@Body() registerData: RegisterDto) {

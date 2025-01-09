@@ -10,8 +10,8 @@ async function bootstrap() {
   });
 
   app.enableCors({
-    origin: 'http://localhost:3000', // Your frontend URL
-    credentials: true, // Allow cookies
+    origin: 'http://localhost:3000',
+    credentials: true,
   });
 
   const config = new DocumentBuilder()

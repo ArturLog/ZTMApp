@@ -22,11 +22,6 @@ export function RegisterForm({ onRegister }: RegisterFormProps) {
   const [password, setPassword] = useState('')
   const [open, setOpen] = useState(false)
 
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault()
-  //   onRegister(name, email, password)
-  //   setOpen(false)
-  // }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
