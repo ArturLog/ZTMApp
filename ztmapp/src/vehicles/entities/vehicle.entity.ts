@@ -4,26 +4,26 @@ import { Stop } from '../../stops/entities/stop.entity';
 @Entity()
 export class Vehicle {
   @PrimaryGeneratedColumn()
-  public id: number
+  public id: number;
 
   @Column()
-  public vehicleId: string
+  public vehicleId: string;
 
   @Column({ nullable: true })
-  public delayInSeconds?: number
+  public delayInSeconds?: number;
 
   @Column({ nullable: true })
-  public headSign?: string
+  public headSign?: string;
 
   @Column({ nullable: true })
-  public routeId?: number
+  public routeId?: number;
 
   @Column({ nullable: true })
-  public theoreticalTime?: string
+  public theoreticalTime?: string;
 
   @Column({ nullable: true })
-  public vehicleCode?: number
+  public vehicleCode?: number;
 
   @ManyToOne(() => Stop, (stop) => stop.vehicles)
-  public stop?: Stop
+  public stop?: Stop;
 }

@@ -5,6 +5,6 @@ import { StopsService } from './stops.service';
 @Module({
   controllers: [StopsController],
   providers: [StopsService],
-  exports: [StopsService]
+  exports: [StopsService],
 })
 export class StopsModule {}

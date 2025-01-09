@@ -1,16 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { User } from './entities/user.entity'
+import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
-import * as bcrypt from "bcrypt";
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>
+    private usersRepository: Repository<User>,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -18,36 +18,35 @@ export class UsersService {
   }
 
   async findById(id: number): Promise<User | null> {
-    return this.usersRepository.findOneBy({ id })
+    return this.usersRepository.findOneBy({ id });
   }
 
   async findByName(name: string): Promise<User | null> {
-    return this.usersRepository.findOneBy({ name })
+    return this.usersRepository.findOneBy({ name });
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.usersRepository.findOneBy({ email })
+    return this.usersRepository.findOneBy({ email });
   }
 
-  async create(userData: CreateUserDto) : Promise<User | null> {
+  async create(userData: CreateUserDto): Promise<User | null> {
     const newUser = this.usersRepository.create(userData);
     await this.usersRepository.save(newUser);
     return newUser;
   }
 
   async update(id: number, userData: UpdateUserDto) {
-   try{
-     if (userData.password){
-       userData.password = await bcrypt.hash(userData.password, 10);
-     }
-     await this.usersRepository.update(id, userData);
-   }catch (e){
-     throw new HttpException(e, HttpStatus.BAD_REQUEST);
-   }
+    try {
+      if (userData.password) {
+        userData.password = await bcrypt.hash(userData.password, 10);
+      }
+      await this.usersRepository.update(id, userData);
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.BAD_REQUEST);
+    }
   }
 
   async delete(id: number): Promise<DeleteResult> {
     return this.usersRepository.delete(id);
   }
 }
-

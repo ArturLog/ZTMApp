@@ -11,7 +11,7 @@ import { Vehicle } from '../vehicles/entities/vehicle.entity';
       database: 'ztmDB',
       entities: [User, Stop, Vehicle],
       synchronize: true,
-    })
-  ]
+    }),
+  ],
 })
 export class DatabaseModule {}

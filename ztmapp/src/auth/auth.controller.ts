@@ -1,13 +1,29 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { RequestWithUser } from './interfaces/requestWithUser';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { LoginDto } from './dto/login.dto';
+import { UsersService } from '../users/users.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UsersService,
+  ) {}
 
   @Post('register')
   async register(@Body() registerData: RegisterDto) {
@@ -17,13 +33,14 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Req() request: RequestWithUser){
-    const { user } = request;
+  async login(@Body() loginData: LoginDto, @Res() res: Response) {
+    const user = await this.userService.findByEmail(loginData.email);
     const cookie = await this.authService.getCookieWithJwtToken(user.id);
-    request.res.setHeader('Set-Cookie', cookie);
-    return user;
+    res.setHeader('Set-Cookie', cookie);
+    res.status(HttpStatus.OK).send(user);
   }
 
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   async logout(@Req() request: RequestWithUser) {
@@ -31,4 +48,3 @@ export class AuthController {
     request.res.sendStatus(200);
   }
 }
-

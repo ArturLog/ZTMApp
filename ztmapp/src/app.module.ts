@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { StopsModule } from './stops/stops.module';
@@ -13,7 +11,7 @@ import configuration from './config/configuration';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [configuration]
+      load: [configuration],
     }),
     UsersModule,
     AuthModule,
@@ -21,8 +19,6 @@ import configuration from './config/configuration';
     VehiclesModule,
     DatabaseModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
