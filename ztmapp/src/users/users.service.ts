@@ -5,6 +5,7 @@ import { DeleteResult, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import * as bcrypt from 'bcrypt';
+import { Stop } from '../stops/entities/stop.entity';
 
 @Injectable()
 export class UsersService {
@@ -19,10 +20,6 @@ export class UsersService {
 
   async findById(id: number): Promise<User | null> {
     return this.usersRepository.findOneBy({ id });
-  }
-
-  async findByName(name: string): Promise<User | null> {
-    return this.usersRepository.findOneBy({ name });
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -53,5 +50,18 @@ export class UsersService {
 
   async delete(id: number): Promise<DeleteResult> {
     return this.usersRepository.delete(id);
+  }
+
+  async getStops(userId: number): Promise<Stop[]>{
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: ['stops'],
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    return user.stops || [];
   }
 }
