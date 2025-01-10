@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { PlusCircle } from 'lucide-react'
 import { AddStopModal } from '@/components/AddStopModal'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/navigation';
 
 interface Bus {
   number: string;
@@ -26,6 +27,8 @@ export default function MyStops() {
   const [myStops, setMyStops] = useState<BusStop[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const router = useRouter();
+
 
   useEffect(() => {
     // Simulating fetching user's stops from backend

@@ -5,11 +5,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useRouter } from 'next/navigation';
 
 export default function ProfilePage() {
   const [user, setUser] = useState({ id: 0, name: '', email: '' });
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -22,10 +24,11 @@ export default function ProfilePage() {
           const userData = await response.json();
           setUser(userData);
         } else {
-          console.error('Failed to fetch user data');
+          router.push('/');
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
+        router.push('/');
       } finally {
         setLoading(false);
       }
@@ -37,7 +40,7 @@ export default function ProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/users/${user.id}`, {
+      const response = await fetch(`http://localhost:3001/users/${user.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

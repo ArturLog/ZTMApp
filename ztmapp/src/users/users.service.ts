@@ -37,12 +37,17 @@ export class UsersService {
 
   async update(id: number, userData: UpdateUserDto) {
     try {
-      if (userData.password) {
-        userData.password = await bcrypt.hash(userData.password, 10);
+      const user = await this.usersRepository.findOneBy({ id });
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-      await this.usersRepository.update(id, userData);
+
+      const password = await bcrypt.hash(userData.password, 10);
+      userData.password = password;
+      const updatedUser = Object.assign(user, userData);
+      return await this.usersRepository.save(updatedUser);
     } catch (e) {
-      throw new HttpException(e, HttpStatus.BAD_REQUEST);
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
     }
   }
 

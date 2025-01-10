@@ -47,7 +47,7 @@ export class AuthService {
       await this.verifyPassword(loginData.password, user.password);
       const payload = { sub: user.id };
       const token = await this.jwtService.signAsync(payload);
-      return `Authentication=${token}; HttpOnly; Path=/; Max-Age=3600000`;
+      return `Authentication=${token}; HttpOnly; Path=/; Max-Age=900`;
     } catch (e) {
       this.logger.error(e);
       throw new UnauthorizedException();
@@ -57,7 +57,7 @@ export class AuthService {
   public async getCookieWithJwtToken(userId: number) {
     const payload = { userId };
     const token = this.jwtService.sign(payload);
-    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=3600000`;
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=900; Secure; SameSite=Strict`;
   }
 
   public async validateUser(email: string, password: string): Promise<User> {
