@@ -44,6 +44,7 @@ export class StopsService {
           stopId: stop.stopId,
           name: stop.stopName,
           description: stop.stopDesc,
+          stopCode: stop.stopCode,
           zone: stop.zoneName,
           type: stop.type
         });

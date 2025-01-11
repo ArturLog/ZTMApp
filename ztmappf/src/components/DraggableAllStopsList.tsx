@@ -10,15 +10,18 @@ interface Bus {
   departureIn: number;
 }
 
-interface BusStop {
+interface Stop {
   id: string;
   name: string;
+  stopCode: string;
+  zone: string;
+  type: string;
   buses: Bus[];
 }
 
 interface DraggableAllStopsListProps {
-  stops: BusStop[];
-  onReorder: (newOrder: BusStop[]) => void;
+  stops: Stop[];
+  onReorder: (newOrder: Stop[]) => void;
 }
 
 export function DraggableAllStopsList({ stops, onReorder }: DraggableAllStopsListProps) {
@@ -49,8 +52,8 @@ export function DraggableAllStopsList({ stops, onReorder }: DraggableAllStopsLis
                       <AccordionItem value={stop.id}>
                         <AccordionTrigger className="px-4 py-3 hover:bg-muted/50 rounded-t-lg">
                           <div className="flex justify-between w-full">
-                            <span className="font-medium">{stop.name}</span>
-                            <span className="text-muted-foreground">ID: {stop.id}</span>
+                            <span className="font-medium">{stop.zone} - {stop.name} - {stop.stopCode} - {stop.type}</span>
+                            <span className="text-muted-foreground">Stop number {stop.id}</span>
                           </div>
                         </AccordionTrigger>
                         <AccordionContent className="px-4 py-2 bg-background rounded-b-lg">

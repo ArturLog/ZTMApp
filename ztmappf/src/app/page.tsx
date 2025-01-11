@@ -10,39 +10,53 @@ interface Bus {
   departureIn: number;
 }
 
-interface BusStop {
+interface Stop {
   id: string;
   name: string;
+  stopCode: string;
+  zone: string;
+  type: string;
   buses: Bus[];
 }
 
-const DraggableAllStopsList = dynamic(() => import('../../src/components/DraggableAllStopsList').then(mod => mod.DraggableAllStopsList), { ssr: false })
+const DraggableAllStopsList = dynamic(
+  () =>
+    import('../../src/components/DraggableAllStopsList').then(
+      mod => mod.DraggableAllStopsList
+    ),
+  { ssr: false }
+)
 
 export default function Home() {
-  const [allStops, setAllStops] = useState<BusStop[]>([])
+  const [allStops, setAllStops] = useState<Stop[]>([])
   const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
-    // Simulating fetching all stops from backend
     const fetchAllStops = async () => {
-      // In a real app, this would be an API call
-      const mockAllStops: BusStop[] = [
-        { id: '1', name: 'Central Station', buses: [
-            { number: '101', direction: 'Downtown', departureIn: 5 },
-            { number: '202', direction: 'Airport', departureIn: 12 },
-            { number: '303', direction: 'University', departureIn: 18 },
-          ]},
-        { id: '2', name: 'Market Square', buses: [
-            { number: '101', direction: 'Suburbs', departureIn: 3 },
-            { number: '404', direction: 'Shopping Mall', departureIn: 8 },
-          ]},
-        { id: '3', name: 'City Park', buses: [
-            { number: '505', direction: 'Beach', departureIn: 15 },
-            { number: '606', direction: 'Stadium', departureIn: 22 },
-          ]},
-      ]
-      setAllStops(mockAllStops)
-    }
+      try {
+        const response = await fetch('http://localhost:3001/stops/active', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch stops');
+        }
+        const stops = await response.json();
+        setAllStops(
+          stops.map((stop: Stop) => ({
+            id: String(stop.id),
+            name: stop.name,
+            stopCode: stop.stopCode,
+            type: stop.type,
+            zone: stop.zone,
+            buses: [],
+          })),
+        );
+      } catch (error) {
+        console.error('Error fetching stops:', error);
+      }
+    };
 
     fetchAllStops()
   }, [])
