@@ -13,4 +13,10 @@ export class StopsController {
     return this.stopsService.getAll();
   }
 
+  @Get('init')
+  async init() : Promise<{ message: string }> {
+    await this.stopsService.init();
+    return { message: 'Stops initialized successfully' };
+  }
+
 }
