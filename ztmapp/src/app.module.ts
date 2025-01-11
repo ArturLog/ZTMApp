@@ -6,6 +6,7 @@ import { VehiclesModule } from './vehicles/vehicles.module';
 import { DatabaseModule } from './database/database.module';
 import { DataSource } from 'typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { DepartureModule } from './departure/departure.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -18,6 +19,7 @@ import configuration from './config/configuration';
     StopsModule,
     VehiclesModule,
     DatabaseModule,
+    DepartureModule,
   ],
 })
 export class AppModule {

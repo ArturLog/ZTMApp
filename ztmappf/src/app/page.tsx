@@ -70,7 +70,7 @@ export default function Home() {
       <h1 className="text-3xl font-bold mb-6">All Bus Stops</h1>
       <Input
         type="text"
-        placeholder="Search bus stops..."
+        placeholder="Search stops..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="mb-6"

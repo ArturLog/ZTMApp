@@ -2,11 +2,9 @@ import {
   Column,
   Entity,
   ManyToMany,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { Vehicle } from '../../vehicles/entities/vehicle.entity';
 
 @Entity()
 export class Stop {
@@ -33,7 +31,4 @@ export class Stop {
 
   @ManyToMany(() => User, (user) => user.stops)
   public users?: User[];
-
-  @OneToMany(() => Vehicle, (vehicle) => vehicle.stop)
-  public vehicles?: Vehicle[];
 }
