@@ -45,7 +45,7 @@ export default function Home() {
         }
         const stops = await response.json();
         setAllStops(
-          stops.map((stop: Stop) => ({
+          stops.map((stop: any) => ({
             id: String(stop.id),
             name: stop.name,
             stopCode: stop.stopCode,

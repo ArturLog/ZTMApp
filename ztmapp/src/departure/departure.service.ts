@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DepartureDto } from './dto/departure.dto';
 import { ConfigService } from '@nestjs/config';
 import { IsString } from 'class-validator';
+import { resolveAny } from 'node:dns';
 
 @Injectable()
 export class DepartureService {
@@ -17,8 +18,16 @@ constructor(
           HttpStatus.BAD_REQUEST,
         );
       }
-      const data = await response.json();
-      const departures = data.delay;
+
+      let data: any;
+      let departures: any
+      try{
+        data = await response.json();
+        departures = data.delay;
+      }catch(e){
+        console.log(`Not found departures for stop ${id}`)
+        return [];
+      }
 
       return departures.map((departure: any) => {
         return {

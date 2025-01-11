@@ -26,8 +26,8 @@ interface DraggableAllStopsListProps {
 }
 
 export function DraggableAllStopsList({ stops, onReorder }: DraggableAllStopsListProps) {
-  const [expandedStopId, setExpandedStopId] = useState<string | null>(null); // Track expanded stop ID
-  const [loadingBuses, setLoadingBuses] = useState<boolean>(false); // Track loading state
+  const [expandedStopId, setExpandedStopId] = useState<string | null>(null);
+  const [loadingBuses, setLoadingBuses] = useState<boolean>(false);
 
   const fetchBuses = async (stopId: string) => {
     try {
@@ -78,12 +78,12 @@ export function DraggableAllStopsList({ stops, onReorder }: DraggableAllStopsLis
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext onDragEnd={onDragEnd} >
       <Droppable droppableId="allStops" isDropDisabled={false} isCombineEnabled={false} ignoreContainerClipping={false}>
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
             {stops.map((stop, index) => (
-              <Draggable key={stop.id} draggableId={stop.id} index={index}>
+              <Draggable key={stop.id} draggableId={stop.id} index={index} isDragDisabled={true}>
                 {(provided) => (
                   <div
                     ref={provided.innerRef}
