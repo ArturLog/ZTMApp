@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
 import dynamic from 'next/dynamic'
 
-interface Bus {
-  number: string;
-  direction: string;
-  departureIn: number;
+interface Departure {
+  routeId: string;
+  headSign: string;
+  minutesToDeparture: string;
+  estimatedTime: string;
 }
 
 interface Stop {
@@ -16,7 +17,7 @@ interface Stop {
   stopCode: string;
   zone: string;
   type: string;
-  buses: Bus[];
+  departures: Departure[];
 }
 
 const DraggableAllStopsList = dynamic(
@@ -50,7 +51,7 @@ export default function Home() {
             stopCode: stop.stopCode,
             type: stop.type,
             zone: stop.zone,
-            buses: [],
+            departures: [],
           })),
         );
       } catch (error) {
@@ -67,7 +68,7 @@ export default function Home() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">All Bus Stops</h1>
+      <h1 className="text-3xl font-bold mb-6">All stops</h1>
       <Input
         type="text"
         placeholder="Search stops..."
