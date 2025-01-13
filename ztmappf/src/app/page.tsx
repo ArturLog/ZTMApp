@@ -4,25 +4,9 @@ import { useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
 import dynamic from 'next/dynamic'
 
-interface Departure {
-  routeId: string;
-  headSign: string;
-  minutesToDeparture: string;
-  estimatedTime: string;
-}
-
-interface Stop {
-  id: string;
-  name: string;
-  stopCode: string;
-  zone: string;
-  type: string;
-  departures: Departure[];
-}
-
 const DraggableAllStopsList = dynamic(
   () =>
-    import('../../src/components/DraggableAllStopsList').then(
+    import('@/components/feature/DraggableAllStopsList').then(
       mod => mod.DraggableAllStopsList
     ),
   { ssr: false }

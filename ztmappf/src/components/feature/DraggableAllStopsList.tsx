@@ -4,22 +4,6 @@ import { useState } from 'react'
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 
-interface Departure {
-  routeId: string;
-  headSign: string;
-  minutesToDeparture: string;
-  estimatedTime: string;
-}
-
-interface Stop {
-  id: string;
-  name: string;
-  stopCode: string;
-  zone: string;
-  type: string;
-  departures: Departure[];
-}
-
 interface DraggableAllStopsListProps {
   stops: Stop[];
   onReorder: (newOrder: Stop[]) => void;

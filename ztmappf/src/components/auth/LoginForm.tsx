@@ -1,16 +1,16 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '../../src/components/ui/button'
-import { Input } from '../../src/components/ui/input'
-import { Label } from '../../src/components/ui/label'
+import { Button } from '../ui/button'
+import { Input } from '../ui/input'
+import { Label } from '../ui/label'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../../src/components/ui/dialog'
+} from '../ui/dialog'
 
 interface LoginFormProps {
   onLogin: (email: string, password: string) => void

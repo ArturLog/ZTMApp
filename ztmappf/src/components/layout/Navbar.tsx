@@ -4,8 +4,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react';
-import { LoginForm } from './LoginForm'
-import { RegisterForm } from './RegisterForm'
+import { LoginForm } from '../auth/LoginForm'
+import { RegisterForm } from '../auth/RegisterForm'
 
 export function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -49,7 +49,7 @@ export function Navbar() {
     try {
       await fetch('http://localhost:3001/auth/logout', {
         method: 'POST',
-        credentials: 'include', // Include cookies
+        credentials: 'include',
       })
       setIsLoggedIn(false)
       setUserName('')
@@ -62,7 +62,7 @@ export function Navbar() {
   return (
     <nav className="flex items-center justify-between p-4 bg-gray-100">
       <Link href="/" className="text-xl font-bold">
-        My App
+        ZTM App
       </Link>
       <div className="space-x-2">
         {isLoggedIn ? (

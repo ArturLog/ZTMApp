@@ -1,11 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { PlusCircle } from 'lucide-react'
-import { AddStopModal } from '@/components/AddStopModal'
+import { AddStopModal } from '@/components/feature/AddStopModal'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation';
 
@@ -21,7 +20,7 @@ interface BusStop {
   buses: Bus[];
 }
 
-const DraggableStopList = dynamic(() => import('@/components/DraggableStopList').then(mod => mod.DraggableStopList), { ssr: false })
+const DraggableStopList = dynamic(() => import('@/components/feature/DraggableStopList').then(mod => mod.DraggableStopList), { ssr: false })
 
 export default function MyStops() {
   const [myStops, setMyStops] = useState<BusStop[]>([])

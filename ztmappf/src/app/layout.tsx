@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist, Azeret_Mono as Geist_Mono } from 'next/font/google'
-import { Navbar } from '@/components/Navbar'
-import './globals.css'
+import { Navbar } from '@/components/layout/Navbar'
+import '../styles/globals.css'
 
 const geistSans = Geist({
   subsets: ['latin'],
