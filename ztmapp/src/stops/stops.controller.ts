@@ -21,7 +21,7 @@ export class StopsController {
     const filteredStops = stops.filter((stop) => stop.name && stop.name.trim() !== '');
 
     return filteredStops.map((stop) => ({
-      id: stop.id.toString(),
+      id: stop.stopId.toString(),
       name: stop.name,
       stopCode: stop.stopCode || '0',
       zone: stop.zone || 'No zone',
