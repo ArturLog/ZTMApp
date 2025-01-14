@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function fetchData(path: string) {
 	try {
-		return axios.get(`http://localhost:3000/${path}`);
+		return axios.get(`http://localhost:3001/${path}`);
 	} catch (error) {
 		console.error(error);
 	}
