@@ -60,36 +60,40 @@ export function Navbar() {
 	};
 
 	return (
-		<nav className="flex items-center justify-between p-4 bg-gray-100 h-[7vh]">
-			<Link href="/" className="text-xl font-bold">
-				ZTM App
-			</Link>
-			<div className="space-x-2">
-				{isLoggedIn ? (
-					<>
-						<Button
-							variant="ghost"
-							onClick={() => router.push("/my-stops")}
-						>
-							My Stops
-						</Button>
-						<Button
-							variant="ghost"
-							onClick={() => router.push("/profile")}
-						>
-							Profile
-						</Button>
-						<Button variant="outline" onClick={handleLogout}>
-							Logout
-						</Button>
-					</>
-				) : (
-					<>
-						<LoginForm onLogin={handleLogin} />
-						<RegisterForm onRegister={handleRegister} />
-					</>
-				)}
+		<nav className="sticky top-0 z-10 bg-gray-100 shadow-md">
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div className="flex items-center justify-between h-16">
+					<Link href="/" className="text-xl font-bold">
+						ZTM App
+					</Link>
+					<div className="space-x-2">
+						{isLoggedIn ? (
+							<>
+								<Button
+									variant="ghost"
+									onClick={() => router.push("/my-stops")}
+								>
+									My Stops
+								</Button>
+								<Button
+									variant="ghost"
+									onClick={() => router.push("/profile")}
+								>
+									Profile
+								</Button>
+								<Button variant="outline" onClick={handleLogout}>
+									Logout
+								</Button>
+							</>
+						) : (
+							<>
+								<LoginForm onLogin={handleLogin} />
+								<RegisterForm onRegister={handleRegister} />
+							</>
+						)}
+					</div>
+				</div>
 			</div>
 		</nav>
-	);
+);
 }

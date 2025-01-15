@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "My Bus Stops",
-	description: "Track your favorite bus stops and departures",
+	title: "My ZTM tracker",
+	description: "Track your favorite stops and departures",
 };
 
 export default function RootLayout({
@@ -26,10 +26,10 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased min-h-screen`}
+				className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased flex flex-col min-h-screen`}
 			>
 				<Navbar />
-				<main className="bg-background h-[87vh]">{children}</main>
+				<main className="flex-grow bg-background overflow-auto pb-16">{children}</main>
 				<Footer />
 			</body>
 		</html>
