@@ -4,11 +4,12 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import dynamic from "next/dynamic";
 import H1 from "@/components/typography/H1";
+import { fetchData } from '@/lib/utils';
 
-const DraggableAllStopsList = dynamic(
+const DraggableStopsList = dynamic(
 	() =>
-		import("@/components/feature/DraggableAllStopsList").then(
-			(mod) => mod.DraggableAllStopsList
+		import("@/components/feature/DraggableStopsList").then(
+			(mod) => mod.DraggableStopsList
 		),
 	{ ssr: false }
 );
@@ -18,20 +19,13 @@ export default function Home() {
 	const [searchTerm, setSearchTerm] = useState("");
 
 	useEffect(() => {
-		const fetchAllStops = async () => {
+		const fetchAllStops = async () => { // TODO: Cache
 			try {
-				const response = await fetch(
-					"http://localhost:3001/stops/active",
-					{
-						method: "GET",
-						headers: { "Content-Type": "application/json" },
-					}
-				);
-
-				if (!response.ok) {
+				const response = await fetchData("stops/active");
+				if (!response || response.status !== 200) {
 					throw new Error("Failed to fetch stops");
 				}
-				const stops = await response.json();
+				const stops = response.data;
 				setAllStops(
 					stops.map((stop: any) => ({
 						id: String(stop.id),
@@ -64,7 +58,7 @@ export default function Home() {
 				onChange={(e) => setSearchTerm(e.target.value)}
 				className="mb-6"
 			/>
-			<DraggableAllStopsList
+			<DraggableStopsList
 				stops={filteredStops}
 				onReorder={setAllStops}
 			/>

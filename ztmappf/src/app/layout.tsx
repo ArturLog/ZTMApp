@@ -3,6 +3,7 @@ import { Geist, Azeret_Mono as Geist_Mono } from "next/font/google";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import "../styles/globals.css";
+import React from 'react';
 
 const geistSans = Geist({
 	subsets: ["latin"],

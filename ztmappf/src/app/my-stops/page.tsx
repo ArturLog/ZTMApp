@@ -5,15 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { AddStopModal } from "@/components/feature/AddStopModal";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { DraggableAllStopsList } from "@/components/feature/DraggableAllStopsList";
 import H1 from "@/components/typography/H1";
+import dynamic from 'next/dynamic';
+import { fetchData } from '@/lib/utils';
 
-const DraggableStopList = dynamic(
+const DraggableStopsList = dynamic(
 	() =>
-		import("@/components/feature/DraggableStopList").then(
-			(mod) => mod.DraggableStopList
+		import("@/components/feature/DraggableStopsList").then(
+			(mod) => mod.DraggableStopsList
 		),
 	{ ssr: false }
 );
@@ -24,26 +24,6 @@ export default function MyStops() {
 	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 	const router = useRouter();
 
-	// useEffect(() => {
-	//   // Simulating fetching user's stops from backend
-	//   const fetchMyStops = async () => {
-	//     // In a real app, this would be an API call
-	//     const mockUserStops: BusStop[] = [
-	//       { id: '1', name: 'My Home Stop', buses: [
-	//           { number: '101', direction: 'Downtown', departureIn: 5 },
-	//           { number: '202', direction: 'Airport', departureIn: 12 },
-	//         ]},
-	//       { id: '2', name: 'Work Stop', buses: [
-	//           { number: '303', direction: 'University', departureIn: 8 },
-	//         ]},
-	//     ]
-	//     setMyStops(mockUserStops)
-	//   }
-	//
-	//   fetchMyStops()
-	// }, [])
-	//
-	//
 	const addStop = (newStop: Stop) => {
 		setMyStops([...myStops, newStop]);
 		// In a real app, you'd also save this to the backend
@@ -54,20 +34,13 @@ export default function MyStops() {
 	);
 
 	useEffect(() => {
-		const fetchAllStops = async () => {
+		const fetchAllStops = async () => { // TODO: Fetch only user stops
 			try {
-				const response = await fetch(
-					"http://localhost:3001/stops/active",
-					{
-						method: "GET",
-						headers: { "Content-Type": "application/json" },
-					}
-				);
-
-				if (!response.ok) {
+				const response = await fetchData("stops/active");
+				if (!response || response.status !== 200) {
 					throw new Error("Failed to fetch stops");
 				}
-				const stops = await response.json();
+				const stops = await response.data;
 				setMyStops(
 					stops.map((stop: any) => ({
 						id: String(stop.id),
@@ -101,14 +74,14 @@ export default function MyStops() {
 				onChange={(e) => setSearchTerm(e.target.value)}
 				className="mb-6"
 			/>
-			<DraggableAllStopsList
+			<DraggableStopsList
 				stops={filteredStops}
 				onReorder={setMyStops}
 			/>
 			<AddStopModal
 				isOpen={isAddModalOpen}
 				onClose={() => setIsAddModalOpen(false)}
-				onAddStop={addStop}
+				onAddStop={addStop} // TODO Update add stop
 			/>
 		</div>
 	);

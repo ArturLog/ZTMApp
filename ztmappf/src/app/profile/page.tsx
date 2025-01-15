@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useRouter } from 'next/navigation';
+import { fetchData } from '@/lib/utils';
 
 export default function ProfilePage() {
   const [user, setUser] = useState({ id: 0, name: '', email: '' });
@@ -16,16 +17,13 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch('http://localhost:3001/auth/me', {
-          method: 'GET',
-          credentials: 'include',
-        });
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData);
-        } else {
+        const response = await fetchData('auth/me');
+        if (!response || response.status !== 200) {
           router.push('/');
+          return;
         }
+        const userData = await response.data;
+        setUser(userData);
       } catch (error) {
         console.error('Error fetching user data:', error);
         router.push('/');

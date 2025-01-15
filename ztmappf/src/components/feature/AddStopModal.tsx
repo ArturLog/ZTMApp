@@ -24,7 +24,7 @@ interface AddStopModalProps {
 }
 
 // Mock data for available stops
-const availableStops: BusStop[] = [
+const availableStops: BusStop[] = [ // TODO: Fetch from cache available stops
   { id: '1', name: 'Central Station', buses: [] },
   { id: '2', name: 'Market Square', buses: [] },
   { id: '3', name: 'City Park', buses: [] },

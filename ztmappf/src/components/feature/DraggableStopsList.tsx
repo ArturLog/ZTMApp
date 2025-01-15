@@ -3,24 +3,25 @@
 import { useState } from 'react'
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { fetchData } from '@/lib/utils';
 
 interface DraggableAllStopsListProps {
   stops: Stop[];
   onReorder: (newOrder: Stop[]) => void;
 }
 
-export function DraggableAllStopsList({ stops, onReorder }: DraggableAllStopsListProps) {
+export function DraggableStopsList({ stops, onReorder }: DraggableAllStopsListProps) {
   const [expandedStopId, setExpandedStopId] = useState<string | null>(null);
   const [loadingBuses, setLoadingBuses] = useState<boolean>(false);
 
-  const fetchBuses = async (stopId: string) => {
+  const fetchDepartures = async (stopId: string) => { // TODO: Cache
     try {
       setLoadingBuses(true);
-      const response = await fetch(`http://localhost:3001/departures/${stopId}`);
-      if (!response.ok) {
-        return []
+      const response = await fetchData(`departures/${stopId}`);
+      if (!response || response.status !== 200) {
+        return [];
       }
-      const departures = await response.json();
+      const departures = response.data;
       return departures.map((Departure: any) => ({
         routeId: Departure.routeId,
         headSign: Departure.headSign,
@@ -42,7 +43,7 @@ export function DraggableAllStopsList({ stops, onReorder }: DraggableAllStopsLis
       const stopIndex = stops.findIndex((stop) => stop.id === stopId);
       if (stopIndex !== -1 && stops[stopIndex].departures.length === 0) {
         // Fetch departures only if they haven't been loaded yet
-        const departures = await fetchBuses(stopId);
+        const departures = await fetchDepartures(stopId);
         const updatedStops = [...stops];
         updatedStops[stopIndex].departures = departures;
         onReorder(updatedStops);
