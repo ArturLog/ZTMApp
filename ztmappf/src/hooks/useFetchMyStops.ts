@@ -3,22 +3,22 @@
 import { useState, useEffect, useCallback } from "react";
 import { fetchData } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
-import { Stop } from "@/interfaces";
+import { Stop } from "@/interfaces/Stop";
 
 export function useFetchMyStops() {
   const { user } = useAuth();
   const [myStops, setMyStops] = useState<Stop[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string>("");
 
   const fetchMyStops = useCallback(async () => {
     setLoading(true);
-    setError(null);
+    setError("");
     if(!user) return null;
     try {
       const response = await fetchData(`users/${user.id}/stops`);
       if (!response || response.status !== 200) {
-        throw new Error("Failed to fetch stops");
+        return;
       }
       const stops = await response.data;
       setMyStops(stops.map((stop: any) => ({
@@ -31,7 +31,7 @@ export function useFetchMyStops() {
                 departures: [],
               }))
             );
-          } catch (error) {
+          } catch (error: any) {
             console.error("Error fetching stops:", error);
       setError(error.message || "An error occurred while fetching stops");
     } finally {

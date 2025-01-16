@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { fetchData, getToken } from "@/lib/utils";
 import Cookies from "js-cookie";
 
-const AuthContext = createContext(null);
+const AuthContext = createContext(null as any);
 
 export function AuthProvider({ children } : { children: any }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

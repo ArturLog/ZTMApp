@@ -1,4 +1,4 @@
-interface Departure {
+export interface Departure {
   routeId: string;
   headSign: string;
   minutesToDeparture: string;

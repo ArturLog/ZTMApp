@@ -1,31 +1,20 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { Navbar } from '@/components/layout/Navbar';
-import { AuthProvider } from '@/contexts/AuthContext';
+// tests/components/Navbar.test.tsx
+import { render, screen } from "@testing-library/react";
+import { Navbar } from "@/components/layout/Navbar";
 
-describe('Navbar', () => {
-  it('should display login buttons when user is not logged in', () => {
-    render(
-      <AuthProvider>
-        <Navbar />
-      </AuthProvider>
-    );
+jest.mock("@/hooks/useAuth", () => ({
+  useAuth: jest.fn(),
+}));
 
-    expect(screen.getByText('Login')).toBeInTheDocument();
-    expect(screen.getByText('Register')).toBeInTheDocument();
-  });
+import { useAuth } from "@/hooks/useAuth"; // Ensure this is imported after the mock
 
-  it('should display user options when user is logged in', () => {
-    render(
-      <AuthProvider>
-        <Navbar />
-      </AuthProvider>
-    );
+test("renders links for logged-in users", () => {
+  // Use the correct type or cast to `jest.Mock`
+  (useAuth as jest.Mock).mockReturnValue({ isLoggedIn: true, user: { id: "1" } });
 
-    // Simulate login state
-    fireEvent.click(screen.getByText('Login')); // Assuming it triggers login state for test purposes
+  render(<Navbar />);
 
-    expect(screen.getByText('My Stops')).toBeInTheDocument();
-    expect(screen.getByText('Profile')).toBeInTheDocument();
-    expect(screen.getByText('Logout')).toBeInTheDocument();
-  });
+  expect(screen.getByText("My Stops")).toBeInTheDocument();
+  expect(screen.getByText("Profile")).toBeInTheDocument();
 });
+

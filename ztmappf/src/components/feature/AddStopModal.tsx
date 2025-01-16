@@ -1,12 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useFetchStops } from "@/hooks/useFetchStops";
 import { fetchData } from '@/lib/utils';
 import { useAuth } from "@/hooks/useAuth";
+import { Stop } from '@/interfaces/Stop';
 
 interface AddStopModalProps {
   isOpen: boolean;
