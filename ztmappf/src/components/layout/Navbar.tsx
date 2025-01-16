@@ -15,7 +15,6 @@ export function Navbar() {
     router.push(`/${id}`);
   };
 
-  // @ts-ignore
   return (
     <nav className="sticky top-0 z-10 bg-gray-100 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

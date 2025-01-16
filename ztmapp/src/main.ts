@@ -24,7 +24,7 @@ async function bootstrap() {
         scheme: 'bearer',
         bearerFormat: 'JWT',
       },
-      'access-token',
+      'access_token',
     )
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);

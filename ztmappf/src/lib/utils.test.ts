@@ -30,7 +30,6 @@ describe("fetchData", () => {
   });
 
   test("should return parsed JSON data", async () => {
-    // Mockowanie fetch z poprawną odpowiedzią
     (global.fetch as any).mockResolvedValueOnce(
       createMockResponse({ data: "mockData" })
     );
@@ -42,16 +41,14 @@ describe("fetchData", () => {
   });
 
   test("should throw an error if fetch fails", async () => {
-    // Mockowanie fetch z błędem sieci
     (global.fetch as any).mockRejectedValueOnce(new Error("Network error"));
 
     await expect(fetchData("/test")).rejects.toThrow("Network error");
   });
 
   test("should throw an error if status is not 200", async () => {
-    // Mockowanie fetch z nieprawidłowym statusem
     (global.fetch as any).mockResolvedValueOnce(createMockResponse({}, 500));
 
-    await expect(fetchData("/test")).rejects.toThrow("Failed to fetch");
+    await expect(fetchData("/test")).rejects.toThrow("Request failed with status code 404");
   });
 });

@@ -16,7 +16,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Stop } from '../stops/entities/stop.entity';
 import { StopsService } from '../stops/stops.service';
 
-@ApiBearerAuth('access-token')
+@ApiBearerAuth('access_token')
 @Controller('users')
 export class UsersController {
   constructor(
@@ -24,13 +24,13 @@ export class UsersController {
     private stopsService: StopsService,
   ) {}
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll() {
     return this.usersService.findAll();
   }
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: number) {
     return this.usersService.findUserByIdWithStops(id);
@@ -55,13 +55,13 @@ export class UsersController {
     return this.usersService.delete(id);
   }
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(':id/stops')
   async getStops(@Param('id') id: number): Promise<Stop[]> {
     return this.usersService.getStops(id);
   }
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post(':userId/stops/:stopId')
   async addStopToUser(
     @Param('userId') userId: number,
@@ -80,7 +80,7 @@ export class UsersController {
     return this.usersService.addStopToUser(user, stop);
   }
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(':userId/stops/:stopId')
   async removeStopFromUser(
     @Param('userId') userId: number,
