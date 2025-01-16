@@ -54,10 +54,9 @@ export class AuthService {
     }
   }
 
-  public async getCookieWithJwtToken(userId: number) {
+  public async getJwtToken(userId: number) {
     const payload = { userId };
-    const token = this.jwtService.sign(payload);
-    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=900; Secure; SameSite=Strict`;
+    return this.jwtService.sign(payload);
   }
 
   public async validateUser(email: string, password: string): Promise<User> {

@@ -6,10 +6,12 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useRouter } from 'next/navigation';
+import { useAuth } from "@/hooks/useAuth";
 import { fetchData } from '@/lib/utils';
 
 export default function ProfilePage() {
-  const [user, setUser] = useState({ id: 0, name: '', email: '' });
+  const { isLoggedIn, user, checkAuth, logout } = useAuth();
+  const [updatedUser, setUpdatedUser] = useState({ id: 0, name: '', email: '' });
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -17,13 +19,12 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetchData('auth/me');
-        if (!response || response.status !== 200) {
-          router.push('/');
-          return;
-        }
-        const userData = await response.data;
-        setUser(userData);
+        await fetchData('auth/current', {
+          method: 'GET',
+          credentials: 'include',
+        }).then((userData: any) => {
+            setUpdatedUser(userData.data)
+        });
       } catch (error) {
         console.error('Error fetching user data:', error);
         router.push('/');
@@ -38,21 +39,17 @@ export default function ProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3001/users/${user.id}`, {
+      const response = await fetchData(`users/${user.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({ ...user, password }),
+        data: JSON.stringify({ ...updatedUser, password }),
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to update profile');
-      }
-
-      const updatedUser = await response.json();
-      setUser(updatedUser);
+      console.log(response);
+      const updatedUser = await response.data;
+      setUpdatedUser(updatedUser);
       setPassword('');
       alert('Profile updated successfully!');
     } catch (error) {
@@ -77,8 +74,8 @@ export default function ProfilePage() {
               <Label htmlFor="name">Name</Label>
               <Input
                 id="name"
-                value={user.name}
-                onChange={(e) => setUser({ ...user, name: e.target.value })}
+                value={updatedUser.name}
+                onChange={(e) => setUpdatedUser({ ...updatedUser, name: e.target.value })}
               />
             </div>
             <div className="space-y-2">
@@ -86,8 +83,8 @@ export default function ProfilePage() {
               <Input
                 id="email"
                 type="email"
-                value={user.email}
-                onChange={(e) => setUser({ ...user, email: e.target.value })}
+                value={updatedUser.email}
+                onChange={(e) => setUpdatedUser({ ...updatedUser, email: e.target.value })}
               />
             </div>
             <div className="space-y-2">

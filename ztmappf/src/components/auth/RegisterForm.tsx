@@ -11,33 +11,29 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { fetchData } from '@/lib/utils';
 
-interface RegisterFormProps {
-  onRegister: (name: string, email: string, password: string) => void
-}
-
-export function RegisterForm({ onRegister }: RegisterFormProps) {
+export function RegisterForm() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
   const [open, setOpen] = useState(false)
 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const response = await fetch('http://localhost:3001/auth/register', {
+      const data = await fetchData('auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, email, password }),
+        data: JSON.stringify({ name, email, password }),
       })
-      if (!response.ok) throw new Error('Failed to register')
-      onRegister(name, email, password)
       setOpen(false)
-    } catch (error) {
-      console.error(error)
+    } catch (error: any) {
+      setError(error.message || 'An error occurred during login');
     }
   }
 
@@ -80,6 +76,7 @@ export function RegisterForm({ onRegister }: RegisterFormProps) {
               required
             />
           </div>
+          {error && <p className="text-red-500">{error}</p>}
           <Button type="submit" className="w-full">
             Register
           </Button>

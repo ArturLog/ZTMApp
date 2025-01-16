@@ -1,8 +1,9 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { StopsService } from './stops.service';
 import { Stop } from './entities/stop.entity';
 import { StopDto } from './dto/stop.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiBearerAuth('access-token')
 @Controller('stops')
@@ -21,7 +22,8 @@ export class StopsController {
     const filteredStops = stops.filter((stop) => stop.name && stop.name.trim() !== '');
 
     return filteredStops.map((stop) => ({
-      id: stop.stopId.toString(),
+      id: stop.id,
+      stopId: stop.stopId.toString(),
       name: stop.name,
       stopCode: stop.stopCode || '0',
       zone: stop.zone || 'No zone',

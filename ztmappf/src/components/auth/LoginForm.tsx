@@ -11,34 +11,29 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../ui/dialog'
+import { useAuth } from "@/hooks/useAuth";
 
 interface LoginFormProps {
-  onLogin: (email: string, password: string) => void
+  onLogin: (id: string) => void
 }
 
 export function LoginForm({ onLogin }: LoginFormProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
   const [open, setOpen] = useState(false)
+  const { checkAuth, login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ email, password }),
-      })
-      if (!response.ok) throw new Error('Failed to log in')
-      onLogin(email, password)
-      setOpen(false)
-    } catch (error) {
-      console.error(error)
+      await login(email, password);
+      await checkAuth();
+      setOpen(false);
+    } catch (error: any) {
+      console.error(error.message || "An error occurred during login");
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -70,6 +65,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
               required
             />
           </div>
+          {error && <p className="text-red-500">{error}</p>}
           <Button type="submit" className="w-full">
             Login
           </Button>

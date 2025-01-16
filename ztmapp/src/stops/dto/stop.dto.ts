@@ -1,8 +1,10 @@
 import { IsString } from 'class-validator';
 
 export class StopDto {
+  public id: number;
+  
   @IsString()
-  public id: string;
+  public stopId: string;
 
   @IsString()
   public stopCode?: string;

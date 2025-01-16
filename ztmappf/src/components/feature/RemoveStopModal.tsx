@@ -4,47 +4,53 @@ import { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { useFetchStops } from "@/hooks/useFetchStops";
+// import { useFetchStops } from "@/hooks/useFetchStops";
+import {useFetchMyStops} from "@/hooks/useFetchMyStops";
 import { fetchData } from '@/lib/utils';
 import { useAuth } from "@/hooks/useAuth";
+import Cookies from 'js-cookie';
 
-interface AddStopModalProps {
+interface RemoveStopModalProps {
   isOpen: boolean;
   refreshStops: () => void;
   onClose: () => void;
 }
 
-export function AddStopModal({ isOpen, refreshStops, onClose }: AddStopModalProps) {
+export function RemoveStopModal({ isOpen, refreshStops, onClose }: RemoveStopModalProps) {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('')
-  const { allStops } = useFetchStops();
+  const { myStops, refreshMyStops } = useFetchMyStops();
 
-  const filteredStops = allStops.filter(stop =>
+  const filteredStops = myStops.filter(stop =>
     stop.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const handleAddStop = async (stop: Stop) => {
+  const handleRemoveStop = async (stop: Stop) => {
     try {
-      const response = await fetchData(`users/${user.id}/stops/${stop.id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
+          const response = await fetchData(`users/${user.id}/stops/${stop.id}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          });
     } catch (error) {
-      console.error("Add stop failed:", error);
-      throw error;
+          console.error("Delete stop failed:", error);
+          throw error;
     }
     refreshStops();
-    onClose()
+    onClose();
   }
+
+  useEffect(() => {
+    refreshMyStops();
+  }, [isOpen])
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add a new stop</DialogTitle>
+          <DialogTitle>Remove a stop</DialogTitle>
         </DialogHeader>
         <div className="py-4">
           <Input
@@ -58,7 +64,7 @@ export function AddStopModal({ isOpen, refreshStops, onClose }: AddStopModalProp
             {filteredStops.map((stop) => (
               <li key={stop.id} className="flex justify-between items-center p-2 hover:bg-muted rounded-lg">
                 <span>{stop.name} - {stop.stopCode} - {stop.type}</span>
-                <Button onClick={() => handleAddStop(stop)} size="sm">Add</Button>
+                <Button onClick={() => handleRemoveStop(stop)} size="sm" variant={"destructive"}>Remove</Button>
               </li>
             ))}
           </ul>

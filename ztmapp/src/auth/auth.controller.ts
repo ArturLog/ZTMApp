@@ -26,8 +26,8 @@ export class AuthController {
   ) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get('me')
-  getMe(@Req() request: RequestWithUser) {
+  @Get('current')
+  async getCurrentUser(@Req() request: RequestWithUser) {
     return request.user;
   }
 
@@ -39,18 +39,11 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Body() loginData: LoginDto, @Res() res: Response) {
+  async login(@Body() loginData: LoginDto) {
     const user = await this.userService.findByEmail(loginData.email);
-    const cookie = await this.authService.getCookieWithJwtToken(user.id);
-    res.setHeader('Set-Cookie', cookie);
-    res.status(HttpStatus.OK).send(user);
-  }
-
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard)
-  @Post('logout')
-  async logout(@Req() request: RequestWithUser) {
-    request.res.setHeader('Set-Cookie', await this.authService.logout());
-    request.res.sendStatus(200);
-  }
+    return {
+      user_id: user.id,
+      access_token: await this.authService.getJwtToken(user.id)
+    }
+    };
 }

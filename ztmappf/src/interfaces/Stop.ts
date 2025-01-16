@@ -1,5 +1,6 @@
 interface Stop {
-  id: string;
+  id: number;
+  stopId: string;
   name: string;
   stopCode: string;
   zone: string;

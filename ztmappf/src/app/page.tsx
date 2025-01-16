@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import dynamic from "next/dynamic";
 import H1 from "@/components/typography/H1";
-import { fetchData } from '@/lib/utils';
+import { useFetchStops } from "@/hooks/useFetchStops";
 
 const DraggableStopsList = dynamic(
 	() =>
@@ -15,38 +15,15 @@ const DraggableStopsList = dynamic(
 );
 
 export default function Home() {
-	const [allStops, setAllStops] = useState<Stop[]>([]);
+	const { allStops, setAllStops, loading, error } = useFetchStops();
 	const [searchTerm, setSearchTerm] = useState("");
-
-	useEffect(() => {
-		const fetchAllStops = async () => { // TODO: Cache
-			try {
-				const response = await fetchData("stops/active");
-				if (!response || response.status !== 200) {
-					throw new Error("Failed to fetch stops");
-				}
-				const stops = response.data;
-				setAllStops(
-					stops.map((stop: any) => ({
-						id: String(stop.id),
-						name: stop.name,
-						stopCode: stop.stopCode,
-						type: stop.type,
-						zone: stop.zone,
-						departures: [],
-					}))
-				);
-			} catch (error) {
-				console.error("Error fetching stops:", error);
-			}
-		};
-
-		fetchAllStops();
-	}, []);
 
 	const filteredStops = allStops.filter((stop) =>
 		stop.name.toLowerCase().includes(searchTerm.toLowerCase())
 	);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
 	return (
 		<div className="container mx-auto p-4">

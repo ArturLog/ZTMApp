@@ -64,4 +64,40 @@ export class UsersService {
 
     return user.stops || [];
   }
+
+  async findUserByIdWithStops(id: number): Promise<User> {
+    return await this.usersRepository.findOne({
+      where: { id: id },
+      relations: ['stops'],
+    });
+  }
+
+
+  async addStopToUser(user: User, stop: Stop): Promise<User> {
+    if (!user.stops) {
+      user.stops = [];
+    }
+
+    if (user.stops.some((existingStop) => existingStop.id === stop.id)) {
+      throw new HttpException(
+        'Stop is already associated with the user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    user.stops.push(stop);
+    return this.usersRepository.save(user);
+  }
+
+  async removeStopFromUser(user: User, stop: Stop): Promise<User> {
+    if (!user.stops || !user.stops.some((existingStop) => existingStop.id === stop.id)) {
+      throw new HttpException(
+        'Stop is not associated with the user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    user.stops = user.stops.filter((existingStop) => existingStop.id !== stop.id);
+    return this.usersRepository.save(user);
+  }
 }

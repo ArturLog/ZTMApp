@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Stop } from './entities/stop.entity';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class StopsService {
@@ -14,6 +15,10 @@ export class StopsService {
 
   async getAll() : Promise<Stop[]>{
     return await this.stopsRepository.find();
+  }
+
+  async findById(id: number) : Promise<Stop> {
+    return await this.stopsRepository.findOneBy({ id })
   }
 
   async init(): Promise<void> {

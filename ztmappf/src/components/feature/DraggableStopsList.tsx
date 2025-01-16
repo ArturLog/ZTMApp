@@ -40,7 +40,7 @@ export function DraggableStopsList({ stops, onReorder }: DraggableAllStopsListPr
     if (expandedStopId === stopId) {
       setExpandedStopId(null);
     } else {
-      const stopIndex = stops.findIndex((stop) => stop.id === stopId);
+      const stopIndex = stops.findIndex((stop) => stop.stopId === stopId);
       if (stopIndex !== -1 && stops[stopIndex].departures.length === 0) {
         // Fetch departures only if they haven't been loaded yet
         const departures = await fetchDepartures(stopId);
@@ -68,7 +68,7 @@ export function DraggableStopsList({ stops, onReorder }: DraggableAllStopsListPr
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
             {stops.map((stop, index) => (
-              <Draggable key={stop.id} draggableId={stop.id} index={index} isDragDisabled={true}>
+              <Draggable key={stop.stopId} draggableId={stop.stopId} index={index} isDragDisabled={true}>
                 {(provided) => (
                   <div
                     ref={provided.innerRef}
@@ -76,18 +76,18 @@ export function DraggableStopsList({ stops, onReorder }: DraggableAllStopsListPr
                     {...provided.dragHandleProps}
                   >
                     <Accordion type="single" collapsible className="bg-card rounded-lg shadow-sm">
-                      <AccordionItem value={stop.id}>
+                      <AccordionItem value={stop.stopId}>
                         <AccordionTrigger
-                          className="px-4 py-3 hover:bg-muted/50 rounded-t-lg"
-                          onClick={() => handleAccordionChange(stop.id)}
+                          className="px-4 py-3 hover:bg-muted/50 rounded-t-lg gap-4"
+                          onClick={() => handleAccordionChange(stop.stopId)}
                         >
                           <div className="flex justify-between w-full">
                             <span className="font-medium">{stop.zone} - {stop.name} - {stop.stopCode} - {stop.type}</span>
-                            <span className="text-muted-foreground">Stop number {stop.id}</span>
+                            <span className="text-muted-foreground">Stop number {stop.stopId}</span>
                           </div>
                         </AccordionTrigger>
                         <AccordionContent className="px-4 py-2 bg-background rounded-b-lg">
-                          {loadingBuses && expandedStopId === stop.id ? (
+                          {loadingBuses && expandedStopId === stop.stopId ? (
                             <p>Loading departures...</p>
                           ) : (
                             <ul className="space-y-2">

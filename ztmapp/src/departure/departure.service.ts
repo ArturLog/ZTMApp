@@ -1,8 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { DepartureDto } from './dto/departure.dto';
 import { ConfigService } from '@nestjs/config';
-import { IsString } from 'class-validator';
-import { resolveAny } from 'node:dns';
 
 @Injectable()
 export class DepartureService {

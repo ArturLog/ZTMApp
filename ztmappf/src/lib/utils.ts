@@ -8,12 +8,29 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-export function fetchData(path: string) {
-	try {
-		return axios.get(`http://localhost:3001/${path}`);
-	} catch (error) {
-		console.error(error);
-	}
+export async function fetchData(path: string, options: any = {}) {
+  const token = getToken();
+  const { method = "GET", data = undefined, headers = {}, ...restOptions } = options;
+
+  const config = {
+    method,
+    url: `http://localhost:3003/${path}`,
+    headers: {
+      ...headers,
+      Authorization: `Bearer ${token}`,
+    },
+    data,
+    withCredentials: true,
+    ...restOptions,
+  };
+
+  try {
+    const response = await axios(config);
+    return response;
+  } catch (error) {
+    console.error("Error in fetchData:", error);
+    throw error;
+  }
 }
 
 export function isTokenExpired(token: string) {

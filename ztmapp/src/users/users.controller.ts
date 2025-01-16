@@ -2,10 +2,10 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
+  Get, HttpException, HttpStatus,
   Param,
   Post,
-  Put, Req,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/createUser.dto';
@@ -14,12 +14,15 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Stop } from '../stops/entities/stop.entity';
-import { RequestWithUser } from '../auth/interfaces/requestWithUser';
+import { StopsService } from '../stops/stops.service';
 
 @ApiBearerAuth('access-token')
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private stopsService: StopsService,
+  ) {}
 
   //@UseGuards(JwtAuthGuard)
   @Get()
@@ -27,10 +30,10 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return this.usersService.findById(id);
+    return this.usersService.findUserByIdWithStops(id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -56,5 +59,43 @@ export class UsersController {
   @Get(':id/stops')
   async getStops(@Param('id') id: number): Promise<Stop[]> {
     return this.usersService.getStops(id);
+  }
+
+  //@UseGuards(JwtAuthGuard)
+  @Post(':userId/stops/:stopId')
+  async addStopToUser(
+    @Param('userId') userId: number,
+    @Param('stopId') stopId: number,
+  ) {
+    const user = await this.usersService.findUserByIdWithStops(userId);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const stop = await this.stopsService.findById(stopId);
+    if (!stop) {
+      throw new HttpException('Stop not found', HttpStatus.NOT_FOUND);
+    }
+
+    return this.usersService.addStopToUser(user, stop);
+  }
+
+  //@UseGuards(JwtAuthGuard)
+  @Delete(':userId/stops/:stopId')
+  async removeStopFromUser(
+    @Param('userId') userId: number,
+    @Param('stopId') stopId: number,
+  ) {
+    const user = await this.usersService.findUserByIdWithStops(userId);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const stop = await this.stopsService.findById(stopId);
+    if (!stop) {
+      throw new HttpException('Stop not found', HttpStatus.NOT_FOUND);
+    }
+
+    return this.usersService.removeStopFromUser(user, stop);
   }
 }
